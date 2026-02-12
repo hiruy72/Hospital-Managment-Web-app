@@ -110,3 +110,41 @@ export const sendAppointmentConfirmationEmail = internalAction({
         }
     },
 });
+
+
+export const sendAppointmentCancellationEmail = internalAction({
+    args: {
+        to: v.string(),
+        patientName: v.string(),
+        doctorName: v.string(),
+        date: v.string(),
+        appointmentId: v.string(),
+    },
+    handler: async (ctx, args) => {
+        if (!process.env.RESEND_API_KEY) {
+            console.error("RESEND_API_KEY is not set. Cannot send email.");
+            return;
+        }
+
+        try {
+            await resend.emails.send({
+                from: "MedCare Appointments <onboarding@resend.dev>",
+                to: args.to,
+                subject: "Appointment Cancelled - MedCare Hospital",
+                html: `
+                    <h1>Appointment Cancelled</h1>
+                    <p>Dear ${args.patientName},</p>
+                    <p>Your appointment with <strong>Dr. ${args.doctorName}</strong> has been cancelled.</p>
+                    <p><strong>Original Date & Time:</strong> ${args.date}</p>
+                    <p>If you would like to reschedule, please contact us or book a new appointment.</p>
+                    <p>Reference ID: ${args.appointmentId}</p>
+                    <br/>
+                    <p>Best regards,<br/>MedCare Hospital Team</p>
+                `,
+            });
+            console.log(`Cancellation email sent to ${args.to}`);
+        } catch (error) {
+            console.error("Failed to send cancellation email", error);
+        }
+    },
+});

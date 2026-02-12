@@ -63,15 +63,24 @@ export const updateStatus = mutation({
 
         await ctx.db.patch(args.appointmentId, { status: args.status });
 
-        // If newly confirmed, send email
-        if (args.status === "confirmed" && appointment.status !== "confirmed") {
-            const patient = await ctx.db.get(appointment.patientId);
-            const doctor = appointment.doctorId
-                ? await ctx.db.get(appointment.doctorId)
-                : null;
+        // Send email on status change
+        const patient = await ctx.db.get(appointment.patientId);
+        const doctor = appointment.doctorId
+            ? await ctx.db.get(appointment.doctorId)
+            : null;
 
-            if (patient && patient.email && doctor) {
-                // Use scheduler to call the action
+        console.log("Email check:", {
+            hasPatient: !!patient,
+            hasEmail: !!patient?.email,
+            hasDoctor: !!doctor,
+            status: args.status,
+            oldStatus: appointment.status
+        });
+
+        if (patient && patient.email && doctor) {
+            // Send confirmation email
+            if (args.status === "confirmed" && appointment.status !== "confirmed") {
+                console.log("Scheduling confirmation email to:", patient.email);
                 await ctx.scheduler.runAfter(0, internal.actions.sendAppointmentConfirmationEmail, {
                     to: patient.email,
                     patientName: patient.name,
@@ -80,6 +89,19 @@ export const updateStatus = mutation({
                     appointmentId: appointment._id,
                 });
             }
+            // Send cancellation email
+            else if (args.status === "cancelled" && appointment.status !== "cancelled") {
+                console.log("Scheduling cancellation email to:", patient.email);
+                await ctx.scheduler.runAfter(0, internal.actions.sendAppointmentCancellationEmail, {
+                    to: patient.email,
+                    patientName: patient.name,
+                    doctorName: doctor.name,
+                    date: new Date(appointment.date).toLocaleString(),
+                    appointmentId: appointment._id,
+                });
+            }
+        } else {
+            console.log("Email not sent - missing required data");
         }
     },
 });

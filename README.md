@@ -1,36 +1,182 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MedCare Hospital Management System
+
+A modern, full-stack hospital management web application built with Next.js, Convex, and Clerk authentication.
+
+## Features
+
+- **Patient Portal**
+  - Browse doctors by department
+  - Book appointments with preferred doctors
+  - View appointment history and status
+  - AI-powered chat assistant for medical queries
+
+- **Admin Dashboard**
+  - Manage all appointments (confirm, cancel, complete)
+  - Add and manage doctors
+  - View patient information
+  - Real-time updates
+
+- **Email Notifications**
+  - Automatic confirmation emails when appointments are approved
+  - Cancellation notifications
+  - Powered by Resend
+
+- **Authentication & Authorization**
+  - Secure user authentication with Clerk
+  - Role-based access control (admin/guest)
+  - Protected admin routes
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TailwindCSS
+- **Backend**: Convex (real-time database & serverless functions)
+- **Authentication**: Clerk
+- **Email**: Resend
+- **AI**: OpenAI GPT-3.5
+- **UI Components**: Radix UI, Lucide Icons, Framer Motion
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 20+
+- npm or yarn
+- Convex account
+- Clerk account
+- Resend API key
+- OpenAI API key
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/hiruy72/Hospital-Managment-Web-app.git
+cd Hospital-Managment-Web-app/HospitalManagementENG
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file:
+```env
+# Convex
+CONVEX_DEPLOYMENT=your-deployment
+NEXT_PUBLIC_CONVEX_URL=your-convex-url
 
-## Learn More
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-key
+CLERK_SECRET_KEY=your-clerk-secret
+CLERK_JWT_ISSUER_DOMAIN=your-clerk-domain
 
-To learn more about Next.js, take a look at the following resources:
+# Resend (for emails)
+RESEND_API_KEY=your-resend-key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# OpenAI (for AI chat)
+OPENAI_API_KEY=your-openai-key
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Set up Convex environment variables
 
-## Deploy on Vercel
+Go to [Convex Dashboard](https://dashboard.convex.dev) → Settings → Environment Variables and add:
+- `RESEND_API_KEY`
+- `OPENAI_API_KEY`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Run the development server
+```bash
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+6. In a separate terminal, run Convex
+```bash
+npx convex dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+## Project Structure
+
+```
+├── app/
+│   ├── admin/              # Admin dashboard pages
+│   ├── appointments/       # User appointments page
+│   ├── all-doctors/        # Browse doctors page
+│   └── _components/        # Shared components
+├── convex/
+│   ├── appointments.ts     # Appointment queries & mutations
+│   ├── doctors.ts          # Doctor management
+│   ├── patients.ts         # Patient/user management
+│   ├── actions.ts          # Email & AI actions
+│   └── schema.ts           # Database schema
+├── components/ui/          # Reusable UI components
+└── lib/                    # Utilities
+```
+
+## Usage
+
+### For Patients
+
+1. Sign up/Login using Clerk authentication
+2. Browse doctors by department
+3. Book an appointment by selecting a doctor and date
+4. View your appointments at `/appointments`
+5. Chat with AI assistant for medical information
+
+### For Admins
+
+1. Sign in and make yourself admin:
+   - Visit `/make-admin` to upgrade your role
+   - Or manually update in Convex dashboard
+
+2. Access admin dashboard at `/admin/appointments`
+3. Confirm, cancel, or complete appointments
+4. Add new doctors at `/admin/doctors/add`
+
+## Configuration
+
+### Adding Image Domains
+
+To allow external images (like doctor photos), add domains to `next.config.ts`:
+```typescript
+images: {
+  remotePatterns: [
+    { protocol: 'https', hostname: 'your-domain.com' }
+  ]
+}
+```
+
+### Database Schema
+
+The app uses Convex with these main tables:
+- `patients` - User accounts with roles
+- `doctors` - Doctor profiles and specializations
+- `appointments` - Appointment bookings and status
+- `categories` - Medical departments
+
+## Deployment
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Add environment variables
+4. Deploy
+
+### Deploy Convex
+
+```bash
+npx convex deploy
+```
+
+Update your production environment variables in Convex dashboard.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open source and available under the MIT License.
