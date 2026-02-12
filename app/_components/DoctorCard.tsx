@@ -1,6 +1,6 @@
 "use client"
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Doc } from '@/convex/_generated/dataModel';
+import type { Doc } from '@/convex/_generated/dataModel';
 import Image from 'next/image';
 import React from 'react'
 import { Badge } from "@/components/ui/badge";
