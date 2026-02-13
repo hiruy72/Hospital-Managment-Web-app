@@ -23,7 +23,7 @@ const formSchema = z.object({
     image: z.string().url("Please enter a valid image URL"),
     bio: z.string().min(10, "Bio must be at least 10 characters"),
     expertise: z.string().min(1, "Please enter at least one expertise"),
-    experience: z.coerce.number().min(0, "Experience must be a positive number"),
+    experience: z.number().min(0, "Experience must be a positive number"),
     location: z.string().min(5, "Location is required"),
     contact: z.string().min(5, "Contact info is required"),
 });
@@ -119,7 +119,11 @@ function page() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <Label htmlFor="experience">Experience (Years)</Label>
-                                    <Input type="number" id="experience" {...form.register("experience")} />
+                                    <Input 
+                                        type="number" 
+                                        id="experience" 
+                                        {...form.register("experience", { valueAsNumber: true })} 
+                                    />
                                     {form.formState.errors.experience && <p className="text-red-500 text-sm mt-1">{form.formState.errors.experience.message}</p>}
                                 </div>
                                 <div>
