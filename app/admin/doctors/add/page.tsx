@@ -49,6 +49,7 @@ function page() {
             location: "",
             contact: "",
         },
+        mode: "onChange",
     });
     // Update preview when form values change
 
@@ -87,7 +88,7 @@ function page() {
                         <CardDescription>Fill in the form below to add a new doctor.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={form.handleSubmit((data) => onSubmit(data as unknown as FormValues))} className="space-y-4">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <div>
                                 <Label htmlFor="name">Full Name</Label>
                                 <Input id="name" {...form.register("name")} placeholder="Dr. John Doe" />
