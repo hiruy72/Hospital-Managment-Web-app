@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery } from 'convex/react'
 import { CalendarIcon } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -81,27 +82,36 @@ function Hero() {
 
             <div className='container relative z-10 px-4 grid md:grid-cols-2 gap-12 items-center'>
                 <div className="space-y-6">
-                    <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-                        Advanced <br />
-                        <span className="text-red-600">Medical Care</span>
+                    <h1 className="text-5xl md:text-7xl font-bold leading-tight animate-fade-in">
+                        <span className="text-white">Advanced</span> <br />
+                        <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Medical Care</span>
                     </h1>
-                    <p className="text-xl text-gray-200 max-w-lg">
+                    <p className="text-xl text-white/90 max-w-lg leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                         Experience world-class healthcare with our expert doctors and state-of-the-art facilities. Your health is our priority.
                     </p>
                     <div className="flex gap-4">
-                        <Button size="lg" className="bg-red-600 hover:bg-red-600/90 text-white border-0">
+                        <Button 
+                            size="lg" 
+                            className="bg-primary hover:bg-primary/90 text-white border-0 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
+                            onClick={() => {
+                                const form = document.querySelector('form');
+                                form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }}
+                        >
                             Book Appointment
                         </Button>
-                        <Button size="lg" variant="outline" className="text-red-600  ">
-                            Our Doctors
-                        </Button>
+                        <Link href="/all-doctors">
+                            <Button size="lg" variant="outline" className="text-white border-white/30 hover:bg-white/10 hover:border-white/50 backdrop-blur-sm">
+                                Our Doctors
+                            </Button>
+                        </Link>
                     </div>
                 </div>
 
 
                 {/* Booking Form Card */}
 
-                <div className="bg-background/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/10 max-w-md w-full ml-auto">
+                <div className="bg-card/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-primary/20 max-w-md w-full ml-auto">
                     <h3 className="text-2xl font-semibold mb-6 text-foreground">Quick Booking</h3>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
